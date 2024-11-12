@@ -113,6 +113,14 @@ def select_barn(b_pnr):
     else:
         return series.iloc[0] # returnerer kun det første elementet i series
     
+def check_availability():
+    kg = pd.read_excel("kgdata.xlsx", sheet_name="barnehage",
+                       names=["index", "id", "navn", "tot_plasser", "ledige_plasser"])
+    if kg.loc[6, "ledige_plasser"]  > 0:
+        return "Tilbud"
+    else:
+        return "Avslag"
+    
     
 # --- Skriv kode for select_soknad her
 

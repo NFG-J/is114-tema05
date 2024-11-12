@@ -5,7 +5,7 @@ from flask import request
 from flask import redirect
 from flask import session
 from kgmodel import (Foresatt, Barn, Soknad, Barnehage)
-from kgcontroller import (form_to_object_soknad, insert_soknad, commit_all, select_alle_barnehager)
+from kgcontroller import (form_to_object_soknad, insert_soknad, commit_all, select_alle_barnehager, check_availability)
 
 app = Flask(__name__)
 app.secret_key = 'BAD_SECRET_KEY' # nødvendig for session
@@ -33,15 +33,17 @@ def behandle():
 
 @app.route('/svar')
 def svar():
+    request_answer = check_availability()
     information = session['information']
-    return render_template('svar.html', data=information)
+    return render_template('svar.html', data=information, answer=request_answer) 
 
 @app.route('/commit')
 def commit():
     commit_all()
     return render_template('commit.html')
 
-
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=5000)  
 
 
 """
