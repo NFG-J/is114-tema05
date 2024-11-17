@@ -116,7 +116,18 @@ def select_barn(b_pnr):
 def check_availability():
     kg = pd.read_excel("kgdata.xlsx", sheet_name="barnehage",
                        names=["index", "id", "navn", "tot_plasser", "ledige_plasser"])
-    if kg.loc[6, "ledige_plasser"]  > 0:
+    kg_soknad = pd.read_excel("kgdata.xlsx", sheet_name="soknad",
+                       names=["index", "id", "foresatt_1", "foresatt_2", "barn", "barnevern", "syk_fam", "syk_barn", "fr_annet", "barnehager", "sosken", "tidspunkt", "inntekt"])
+    prioritet = kg_soknad.loc[0, "barnehager"]
+    for x in range(len(kg)):
+        kg_check = kg.loc[x, "navn"]
+        if kg_check  == prioritet:
+            kg_id = kg.loc[x, "id"]
+            break
+    for x in range(len(kg)):
+        if kg.loc[x, "id"] == kg_id:
+            plasser = kg.loc[x, "ledige_plasser"]   
+    if plasser  > 0:
         return "Tilbud"
     else:
         return "Avslag"
@@ -155,8 +166,9 @@ def select_alle_barn():
 
 # ------------------
 # Update
-
-
+def update_kg():
+     with pd.ExcelWriter('kgdata.xlsx', mode='a', if_sheet_exists='replace') as writer:
+         soknad.to_excel(writer, sheet_name='soknad')
 # ------------------
 # Delete
 
